@@ -8,6 +8,7 @@ module Warc
     
     if (gzipped || warc)
       fh = ::File.exists?(path) ? ::File.new(path,mode) : path
+      byebug
       return Stream::Gzip.new(fh) if gzipped
       return Stream::Plain.new(fh) if warc
     else
