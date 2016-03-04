@@ -2,13 +2,12 @@ require 'pathname'
 
 module Warc
   def self.open_stream(path,mode='r+')
-        
+
     gzipped = path.match(/.*\.warc\.gz$/)
     warc = path.match(/.*\.warc$/)
-    
+
     if (gzipped || warc)
       fh = ::File.exists?(path) ? ::File.new(path,mode) : path
-      byebug
       return Stream::Gzip.new(fh) if gzipped
       return Stream::Plain.new(fh) if warc
     else
@@ -20,12 +19,12 @@ module Warc
     private_class_method :new
     include Enumerable
     attr_reader :parser
-    
+
     DEFAULT_OPTS = {
-      # Maximum file size 
+      # Maximum file size
       :max_filesize => 10**9
     }
-    
+
     def initialize(fh,options={},&block)
       @options = DEFAULT_OPTS.merge options
       @index = 0
@@ -35,7 +34,7 @@ module Warc
         fh
       when String
         @name = fh
-        @naming_proc = block || lambda {|name,index| "#{name}.#{sprintf('%06d',index)}"} 
+        @naming_proc = block || lambda {|name,index| "#{name}.#{sprintf('%06d',index)}"}
         next_file_handle
       end
       @file_handle=fh
@@ -84,14 +83,14 @@ module Warc
     def size
       @file_handle.stat.size
     end
-    
+
     private
 
     def next_file_handle
       @file_handle.close if @file_handle
       @index += 1
       path = @naming_proc.call(@name,@index)
-      @file_handle = ::File.new(path + @ext,'a+')
+      @file_handle = ::File.new(path + @ext,'a+b')
     end
   end
 end
